@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 from dotenv import load_dotenv
-import google.generativeai as genai
 from data_loader import prepare_data
 from forecaster import reconstruct_state, forecast_90_days, calculate_safe_amount, find_earliest_full_payment_date, resolve_conflicts
 from plan_evaluator import (
@@ -77,9 +76,7 @@ def main():
     load_dotenv()
     
     api_key = os.getenv("GOOGLE_API_KEY")
-    if api_key and api_key != "your_api_key_here":
-        genai.configure(api_key=api_key)
-    else:
+    if not api_key or api_key == "your_api_key_here":
         print("WARNING: GOOGLE_API_KEY is not set or invalid. LLM features may fail.")
 
     dataset_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'dataset')

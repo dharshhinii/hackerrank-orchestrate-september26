@@ -1,5 +1,5 @@
 import os
-import google.generativeai as genai
+from google import genai
 from typing import Dict, Any, List
 import pandas as pd
 
@@ -68,7 +68,7 @@ def generate_decision_explanation(
     Uses the Gemini LLM.
     """
     try:
-        model = genai.GenerativeModel(tracker.model_name)
+        client = genai.Client()
         
         prompt = f"""
         You are a financial AI agent. Explain your decision for the following request.
@@ -85,7 +85,10 @@ def generate_decision_explanation(
         Write the explanation directly. Do not include introductory conversational text.
         """
         
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model=tracker.model_name,
+            contents=prompt
+        )
         
         # Track tokens (gemini SDK provides usage_metadata if available, otherwise estimate)
         try:
